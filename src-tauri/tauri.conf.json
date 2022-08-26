@@ -11,7 +11,9 @@
   },
   "tauri": {
     "allowlist": {
-      "all": false
+      "process": {
+        "exit": true
+      }
     },
     "bundle": {
       "active": false,
@@ -57,6 +59,7 @@
         "title": "Sudoku",
         "decorations": false,
         "fileDropEnabled": false,
+        "center": false,
         "focus": true,
         "maximized": false,
         "maxHeight": 640,

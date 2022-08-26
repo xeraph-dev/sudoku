@@ -1,0 +1,74 @@
+:where(html[color-scheme='light']) {
+  color-scheme: light;
+
+  --link: var(--indigo-7);
+  --link-visited: var(--grape-7);
+
+  --text-1: var(--gray-9);
+  --text-2: var(--gray-7);
+
+  --surface-1: var(--gray-0);
+  --surface-2: var(--gray-2);
+  --surface-3: var(--gray-3);
+  --surface-4: var(--gray-4);
+
+  :where(button, button[type], input[type='button'], input[type='submit'], input[type='reset']),
+  :where(input[type='file'])::-webkit-file-upload-button,
+  :where(input[type='file'])::file-selector-button {
+    --_highlight: var(--_highlight-light);
+    --_bg: var(--_bg-light);
+    --_ink-shadow: var(--_ink-shadow-light);
+  }
+
+  :where(button, button[type], input[type='button'], input[type='submit'], input[type='reset']) {
+    &[disabled] {
+      --_text: var(--gray-6);
+    }
+
+    :where([type='reset']) {
+      --_text: var(--red-2);
+      --_border: var(--surface-3);
+    }
+  }
+}
+
+:where(html[color-scheme='dark']) {
+  color-scheme: dark;
+
+  --link: var(--indigo-3);
+  --link-visited: var(--grape-3);
+
+  --text-1: var(--gray-1);
+  --text-2: var(--gray-4);
+
+  --surface-1: var(--gray-9);
+  --surface-2: var(--gray-8);
+  --surface-3: var(--gray-7);
+  --surface-4: var(--gray-6);
+
+  :where(button, button[type], input[type='button'], input[type='submit'], input[type='reset']),
+  :where(input[type='file'])::-webkit-file-upload-button,
+  :where(input[type='file'])::file-selector-button {
+    --_highlight: var(--_highlight-dark);
+    --_bg: var(--_bg-dark);
+    --_ink-shadow: var(--_ink-shadow-dark);
+  }
+
+  :where(button, button[type], input[type='button'], input[type='submit'], input[type='reset']) {
+    &[disabled] {
+      --_text: var(--gray-5);
+    }
+
+    :where([type='reset']) {
+      --_text: var(--red-2);
+      --_border: var(--surface-3);
+    }
+  }
+
+  :where([type='submit']),
+  :where(form button:not([type='button'])),
+  :where([type='reset']),
+  :where([disabled]) {
+    --_bg: var(--surface-1);
+  }
+}

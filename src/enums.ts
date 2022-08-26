@@ -5,3 +5,9 @@ export enum Page {
   Settings,
   Levels,
 }
+
+export enum Theme {
+  Dark = 'dark',
+  Light = 'light',
+  System = 'system',
+}

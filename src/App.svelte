@@ -2,7 +2,7 @@
   import { onMount, onDestroy } from 'svelte'
   import Footer from './lib/Footer.svelte'
   import Navbar from './lib/Navbar.svelte'
-  import { page, penActive, selected, sudoku } from './stores'
+  import { page, penActive, selected, sudoku, initStores } from './stores'
   import { Page } from './enums'
   import type { Move } from './types'
   import MenuPage from './pages/MenuPage.svelte'
@@ -25,25 +25,27 @@
   })
 </script>
 
-<div>
-  <Navbar />
-  <main>
-    {#if $page === Page.Menu}
-      <MenuPage />
-    {:else if $page === Page.Help}
-      <HelpPage />
-    {:else if $page === Page.Settings}
-      <SettingsPage />
-    {:else if $page === Page.Levels}
-      <LevelsPage />
-    {:else if $page === Page.Game}
-      <GamePage />
-    {/if}
-  </main>
-  <Footer />
-</div>
+{#await initStores() then}
+  <div>
+    <Navbar />
+    <main>
+      {#if $page === Page.Menu}
+        <MenuPage />
+      {:else if $page === Page.Help}
+        <HelpPage />
+      {:else if $page === Page.Settings}
+        <SettingsPage />
+      {:else if $page === Page.Levels}
+        <LevelsPage />
+      {:else if $page === Page.Game}
+        <GamePage />
+      {/if}
+    </main>
+    <Footer />
+  </div>
+{/await}
 
-<style>
+<style lang="postcss">
   div {
     display: grid;
     max-height: 100vh;

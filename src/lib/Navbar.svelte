@@ -10,7 +10,7 @@
   {/if}
 </header>
 
-<style>
+<style lang="postcss">
   header {
     grid-area: navbar;
     padding: var(--size-2) var(--size-3);
@@ -22,10 +22,10 @@
     border-radius: var(--radius-round);
     background-color: transparent;
     box-shadow: var(--inner-shadow-2);
-  }
 
-  button:hover {
-    background-color: var(--gray-7);
-    box-shadow: var(--shadow-2);
+    &:hover {
+      background-color: var(--_border);
+      box-shadow: var(--shadow-2);
+    }
   }
 </style>

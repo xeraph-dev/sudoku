@@ -1,12 +1,47 @@
 import { get, writable } from 'svelte/store'
+import { Store } from 'tauri-plugin-store-api'
 
-import { Page } from './enums'
+import { Page, Theme } from './enums'
 import type { Move, Posn, Sudoku } from './types'
+
+const store = new Store('.settings.dat')
+
+export const theme = (() => {
+  const key = 'color-scheme'
+  const { set: _set, subscribe } = writable(Theme.System)
+
+  subscribe(async run => {
+    await store.set(key, run)
+    await store.save()
+  })
+
+  return {
+    subscribe,
+    set(value: Theme) {
+      if (value === Theme.System)
+        document.documentElement.removeAttribute('color-scheme')
+      else document.documentElement.setAttribute('color-scheme', value)
+      _set(value)
+    },
+    async init() {
+      const data = await store.get(key)
+      if (data) theme.set(data as Theme)
+    },
+  }
+})()
 
 export const penActive = writable(false)
 
 export const selected = (() => {
+  const key = 'selected'
   const { set, subscribe, update } = writable<Posn>()
+
+  subscribe(async run => {
+    if (run) {
+      await store.set(key, run)
+      await store.save()
+    }
+  })
 
   return {
     subscribe,
@@ -25,6 +60,10 @@ export const selected = (() => {
           ? { ...n, x: n.x < 8 ? n.x + 1 : 0 }
           : n,
       )
+    },
+    async init() {
+      const data = await store.get(key)
+      if (data) set(data as Posn)
     },
   }
 })()
@@ -47,7 +86,13 @@ const createSudoku = () => {
 }
 
 export const sudoku = (() => {
+  const key = 'current-game'
   const { set, subscribe, update } = writable<Sudoku>(createSudoku())
+
+  subscribe(async run => {
+    await store.set(key, run)
+    await store.save()
+  })
 
   return {
     subscribe,
@@ -88,7 +133,42 @@ export const sudoku = (() => {
           })
       }
     },
+    async init() {
+      const data = await store.get(key)
+      if (data) set(data as Sudoku)
+    },
   }
 })()
 
-export const page = writable<Page>(Page.Menu)
+export const page = (() => {
+  const key = 'page'
+  const { set, subscribe, update } = writable<Page>(Page.Menu)
+
+  subscribe(async run => {
+    if (run === Page.Game) {
+      await store.set(key, run)
+      await store.save()
+    } else {
+      await store.delete(key)
+      await store.save()
+    }
+  })
+
+  return {
+    set,
+    update,
+    subscribe,
+    async init() {
+      const data = await store.get(key)
+      if (data) set(data as Page)
+    },
+  }
+})()
+
+export const initStores = async () => {
+  await store.load()
+  await theme.init()
+  await page.init()
+  await sudoku.init()
+  await selected.init()
+}
