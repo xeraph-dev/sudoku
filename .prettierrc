@@ -1,0 +1,29 @@
+{
+  "arrowParens": "avoid",
+  "bracketSameLine": false,
+  "bracketSpacing": true,
+  "endOfLine": "lf",
+  "printWidth": 80,
+  "quoteProps": "as-needed",
+  "semi": false,
+  "useTabs": false,
+  "tabWidth": 2,
+  "trailingComma": "all",
+  "singleQuote": true,
+  "pluginSearchDirs": ["."],
+  "overrides": [
+    {
+      "files": "*.svelte",
+      "options": {
+        "printWidth": 120,
+        "parser": "svelte"
+      }
+    },
+    {
+      "files": "*.html",
+      "options": {
+        "printWidth": 300
+      }
+    }
+  ]
+}
