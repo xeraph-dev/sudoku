@@ -1,13 +1,15 @@
 <script>
   import { exit } from '@tauri-apps/api/process'
   import { Page } from '../enums'
-  import { page } from '../stores'
+  import { hasGame, page } from '../stores'
 </script>
 
 <section>
   <ul>
     <li><button type="button" on:click={() => page.set(Page.Levels)}>New game</button></li>
-    <li><button type="button" on:click={() => page.set(Page.Game)}>Continue</button></li>
+    {#if $hasGame}
+      <li><button type="button" on:click={() => page.set(Page.Game)}>Continue</button></li>
+    {/if}
     <li><button type="button" on:click={() => page.set(Page.Settings)}>Settings</button></li>
     <li><button type="button" on:click={() => exit(0)}>Exit</button></li>
   </ul>

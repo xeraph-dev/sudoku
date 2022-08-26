@@ -11,3 +11,12 @@ export enum Theme {
   Light = 'light',
   System = 'system',
 }
+
+export enum Level {
+  Easy = 'easy',
+  Extreme = 'extreme',
+  Hard = 'hard',
+  Medium = 'medium',
+}
+
+export const Levels = [Level.Easy, Level.Medium, Level.Hard, Level.Extreme]

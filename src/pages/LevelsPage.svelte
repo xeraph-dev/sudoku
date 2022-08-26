@@ -1,9 +1,22 @@
+<script lang="ts">
+  import { Level, Levels, Page } from '../enums'
+  import _ from 'lodash'
+  import { hasGame, page, selected, sudoku } from '../stores'
+  import { generateBoard } from '../generate'
+
+  function toLevel(level: Level) {
+    sudoku.setBoard(generateBoard(level))
+    hasGame.set(true)
+    page.set(Page.Game)
+    selected.set(undefined)
+  }
+</script>
+
 <section>
   <ul>
-    <li><button type="button">Easy</button></li>
-    <li><button type="button">Medium</button></li>
-    <li><button type="button">Hard</button></li>
-    <li><button type="button">Extreme</button></li>
+    {#each Levels as level}
+      <li><button type="button" on:click={() => toLevel(level)}>{_.capitalize(level)}</button></li>
+    {/each}
   </ul>
 </section>
 

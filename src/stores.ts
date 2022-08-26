@@ -1,18 +1,16 @@
 import { get, writable } from 'svelte/store'
-import { Store } from 'tauri-plugin-store-api'
 
 import { Page, Theme } from './enums'
-import type { Move, Posn, Sudoku } from './types'
-
-const store = new Store('.settings.dat')
+import { storage } from './storage'
+import type { Board, Move, Posn, Sudoku } from './types'
 
 export const theme = (() => {
   const key = 'color-scheme'
   const { set: _set, subscribe } = writable(Theme.System)
 
   subscribe(async run => {
-    await store.set(key, run)
-    await store.save()
+    await storage.set(key, run)
+    await storage.save()
   })
 
   return {
@@ -24,8 +22,8 @@ export const theme = (() => {
       _set(value)
     },
     async init() {
-      const data = await store.get(key)
-      if (data) theme.set(data as Theme)
+      const data = await storage.get<Theme>(key)
+      if (data) theme.set(data)
     },
   }
 })()
@@ -38,8 +36,8 @@ export const selected = (() => {
 
   subscribe(async run => {
     if (run) {
-      await store.set(key, run)
-      await store.save()
+      await storage.set(key, run)
+      await storage.save()
     }
   })
 
@@ -62,8 +60,8 @@ export const selected = (() => {
       )
     },
     async init() {
-      const data = await store.get(key)
-      if (data) set(data as Posn)
+      const data = await storage.get<Posn>(key)
+      if (data) set(data)
     },
   }
 })()
@@ -78,6 +76,7 @@ const createSudoku = () => {
         .fill(false)
         .reduce((acc, curr, i) => ({ ...acc, [i + 1]: curr }), {
           locked: false,
+          default: false,
         })
     }
   }
@@ -90,13 +89,28 @@ export const sudoku = (() => {
   const { set, subscribe, update } = writable<Sudoku>(createSudoku())
 
   subscribe(async run => {
-    await store.set(key, run)
-    await store.save()
+    await storage.set(key, run)
+    await storage.save()
   })
 
   return {
     subscribe,
     set,
+    setBoard(board: Board) {
+      update(n => {
+        n = createSudoku()
+        board.forEach((rows, x) => {
+          rows.forEach((v, y) => {
+            if (v) {
+              n[x][y].default = true
+              n[x][y][v] = true
+            }
+          })
+        })
+
+        return n
+      })
+    },
     setLock(lock: boolean) {
       const $selected = get(selected)
       update(n => {
@@ -118,7 +132,7 @@ export const sudoku = (() => {
         if ($selected)
           update(n => {
             const curr = n[$selected.x][$selected.y]
-            if (!curr.locked) {
+            if (!curr.locked && !curr.default) {
               const prev = curr[value]
               if (!$penActive) {
                 Array(9)
@@ -134,8 +148,8 @@ export const sudoku = (() => {
       }
     },
     async init() {
-      const data = await store.get(key)
-      if (data) set(data as Sudoku)
+      const data = await storage.get<Sudoku>(key)
+      if (data) set(data)
     },
   }
 })()
@@ -146,11 +160,11 @@ export const page = (() => {
 
   subscribe(async run => {
     if (run === Page.Game) {
-      await store.set(key, run)
-      await store.save()
+      await storage.set(key, run)
+      await storage.save()
     } else {
-      await store.delete(key)
-      await store.save()
+      await storage.delete(key)
+      await storage.save()
     }
   })
 
@@ -159,16 +173,37 @@ export const page = (() => {
     update,
     subscribe,
     async init() {
-      const data = await store.get(key)
-      if (data) set(data as Page)
+      const data = await storage.get<Page>(key)
+      if (data) set(data)
+    },
+  }
+})()
+
+export const hasGame = (() => {
+  const key = 'has-game'
+  const { set, subscribe, update } = writable(false)
+
+  subscribe(async run => {
+    await storage.set(key, run)
+    await storage.save()
+  })
+
+  return {
+    set,
+    subscribe,
+    update,
+    async init() {
+      const data = await storage.get<boolean>(key)
+      if (data) set(data)
     },
   }
 })()
 
 export const initStores = async () => {
-  await store.load()
+  await storage.load()
   await theme.init()
   await page.init()
   await sudoku.init()
+  await hasGame.init()
   await selected.init()
 }

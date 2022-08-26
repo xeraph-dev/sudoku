@@ -4,7 +4,7 @@
   import LockOpen from './icons/LockOpen.svelte'
   import LockClose from './icons/LockClose.svelte'
 
-  $: curr = $selected ? $sudoku[$selected.x][$selected.y] : { locked: false }
+  $: curr = $selected ? $sudoku[$selected.x][$selected.y] : { locked: false, default: false }
   $: isNum = Object.entries(curr).filter(([k, v]) => k.match(/^[1-9]$/) && v).length === 1
 </script>
 
@@ -20,7 +20,7 @@
     class="lock"
     class:active={curr.locked}
     on:click={() => sudoku.setLock(!curr.locked)}
-    disabled={!($selected && isNum)}
+    disabled={!($selected && isNum) || curr.default}
   >
     {#if curr.locked}
       <LockClose />

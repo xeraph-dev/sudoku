@@ -10,7 +10,7 @@
   $: num = Object.entries(curr).find(([k, v]) => k.match(/^[1-9]$/) && v)?.[0]
 </script>
 
-<div class="root" class:selected={_.isEqual($selected, posn)} class:locked={curr.locked}>
+<div class="root" class:selected={_.isEqual($selected, posn)} class:locked={curr.locked} class:default={curr.default}>
   <div on:click={() => selected.set(posn)} class:isNum>
     {#if isNum}
       <span>{num}</span>
@@ -29,6 +29,7 @@
     .root {
       --bg: var(--bg-dark);
       --lock: var(--lock-dark);
+      --default: var(--default-dark);
     }
   }
 
@@ -36,16 +37,20 @@
     .root {
       --bg: var(--bg-light);
       --lock: var(--lock-light);
+      --default: var(--default-light);
     }
   }
 
   .root {
     --bg-dark: var(--indigo-9);
     --lock-dark: var(--gray-8);
+    --default-dark: var(--gray-7);
     --bg-light: var(--indigo-1);
     --lock-light: var(--gray-4);
+    --default-light: var(--gray-1);
     --bg: var(--bg-light);
     --lock: var(--lock-light);
+    --default: var(--default-light);
     position: relative;
     border: var(--border-size-1) solid var(--bg);
     box-shadow: var(--inner-shadow-2);
@@ -56,6 +61,7 @@
     @media (--OSdark) {
       --bg: var(--bg-dark);
       --lock: var(--lock-dark);
+      --default: var(--default-dark);
     }
 
     &.selected {
@@ -72,6 +78,12 @@
         border-color: var(--bg);
         box-shadow: var(--shadow-2);
       }
+    }
+
+    &.default {
+      background-color: var(--default);
+      border-color: var(--default);
+      box-shadow: none;
     }
 
     & > div {
