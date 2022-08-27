@@ -1,12 +1,24 @@
 <script>
   import { Page } from '../enums'
-  import { page } from '../stores'
+  import { hasGame, page, selected, sudoku } from '../stores'
   import ArrowLeftIcon from './icons/ArrowLeftIcon.svelte'
+  import DeleteIcon from './icons/DeleteIcon.svelte'
+
+  async function deleteGame() {
+    await sudoku.remove()
+    hasGame.set(false)
+    page.set(Page.Menu)
+    selected.set(undefined)
+  }
 </script>
 
 <header>
   {#if $page !== Page.Menu}
     <button type="button" on:click={() => page.set(Page.Menu)}><ArrowLeftIcon /></button>
+  {/if}
+  <div />
+  {#if $page === Page.Game}
+    <button type="button" on:click={deleteGame}><DeleteIcon /></button>
   {/if}
 </header>
 
@@ -14,6 +26,12 @@
   header {
     grid-area: navbar;
     padding: var(--size-2) var(--size-3);
+    display: flex;
+    align-items: center;
+  }
+
+  div {
+    flex-grow: 1;
   }
 
   button {

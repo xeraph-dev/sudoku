@@ -3,9 +3,9 @@
 </script>
 
 <div>
-  {#each Array(3).fill(0) as _, i}
-    {#each Array(3).fill(0) as _, j}
-      <SquareGroup posn={{ x: i, y: j }} />
+  {#each Array(3).fill(0) as _, row}
+    {#each Array(3).fill(0) as _, col}
+      <SquareGroup posn={{ row, col }} />
     {/each}
   {/each}
 </div>

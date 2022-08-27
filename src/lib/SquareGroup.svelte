@@ -6,9 +6,9 @@
 </script>
 
 <div>
-  {#each Array(3).fill(0) as _, i}
-    {#each Array(3).fill(0) as _, j}
-      <Square posn={{ x: i + 3 * posn.x, y: j + 3 * posn.y }} />
+  {#each Array(3).fill(0) as _, row}
+    {#each Array(3).fill(0) as _, col}
+      <Square posn={{ row: row + 3 * posn.row, col: col + 3 * posn.col }} />
     {/each}
   {/each}
 </div>

@@ -16,7 +16,7 @@
       if (event.key.startsWith('Arrow')) selected.move(event.key.replace('Arrow', '').toLowerCase() as Move)
       else if (event.key.match(/^[1-9]$/)) sudoku.setValue(+event.key)
       else if (event.key === '0') penActive.set(!$penActive)
-      else if (event.key === '.') sudoku.setLock(!$sudoku[$selected.x][$selected.y].locked)
+      else if (event.key === '.') sudoku.setLock(!$sudoku[$selected.row][$selected.col].locked)
     })
   })
 

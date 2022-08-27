@@ -1,7 +1,7 @@
 import { random, range, sample, shuffle } from 'lodash'
 
 import { type Level, Levels } from './enums'
-import type { Board, Coordinate } from './types'
+import type { Board, Posn, Sudoku } from './types'
 
 const clone = (arg: unknown) => JSON.parse(JSON.stringify(arg))
 
@@ -11,9 +11,28 @@ const newBoxRange = () => Array.from({ length: 9 }).map((_, i) => i + 1)
 
 const newBoard = () => clone(BLANK)
 
-const isValidCell = (board: Board, num: number, coor: Coordinate): boolean => {
-  const [row, col] = coor
+export const sudokuToBoard = (sudoku: Sudoku) => {
+  const board = newBoard()
+  for (const row of range(board.length)) {
+    for (const col of range(board[0].length)) {
+      const curr = sudoku[row][col]
+      const isNum =
+        Object.entries(curr).filter(([k, v]) => k.match(/^[1-9]$/) && v)
+          .length === 1
+      const value = Object.entries(curr).find(
+        ([k, v]) => k.match(/^[1-9]$/) && v,
+      )?.[0]
+      if (isNum) board[row][col] = +value
+    }
+  }
 
+  return board
+}
+
+export const isValidCell = (board: Board, num: number, posn: Posn): boolean => {
+  const { col, row } = posn
+
+  console.log(board[row], num)
   if (board[row].includes(num)) return false
 
   const cols = board.map(r => r[col])
@@ -77,11 +96,11 @@ const areRowsValid = (board: Board): boolean =>
     })
     .some(v => v === false)
 
-const findSpace = (board: Board): Coordinate => {
+const findSpace = (board: Board): Posn => {
   for (const row of range(9)) {
     for (const col of range(9)) {
       if (!board[row][col]) {
-        return [row, col]
+        return { row, col }
       }
     }
   }
@@ -93,7 +112,7 @@ const solveBoard = (board: Board): Board => {
   const space = findSpace(board)
 
   if (space) {
-    const [row, col] = space
+    const { col, row } = space
 
     const nums = shuffle(range(1, 10))
 

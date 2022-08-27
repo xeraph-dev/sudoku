@@ -1,6 +1,7 @@
 import { get, writable } from 'svelte/store'
 
 import { Page, Theme } from './enums'
+import { isValidCell, sudokuToBoard } from './generate'
 import { storage } from './storage'
 import type { Board, Move, Posn, Sudoku } from './types'
 
@@ -47,15 +48,15 @@ export const selected = (() => {
     move(move: Move) {
       update(n =>
         !n
-          ? { x: 0, y: 0 }
+          ? { row: 0, col: 0 }
           : move === 'left'
-          ? { ...n, y: n.y > 0 ? n.y - 1 : 0 }
+          ? { ...n, col: n.col > 0 ? n.col - 1 : 0 }
           : move === 'right'
-          ? { ...n, y: n.y < 8 ? n.y + 1 : 8 }
+          ? { ...n, col: n.col < 8 ? n.col + 1 : 8 }
           : move === 'up'
-          ? { ...n, x: n.x > 0 ? n.x - 1 : 0 }
+          ? { ...n, row: n.row > 0 ? n.row - 1 : 0 }
           : move === 'down'
-          ? { ...n, x: n.x < 8 ? n.x + 1 : 0 }
+          ? { ...n, row: n.row < 8 ? n.row + 1 : 0 }
           : n,
       )
     },
@@ -69,14 +70,15 @@ export const selected = (() => {
 const createSudoku = () => {
   const sudoku: Sudoku = []
 
-  for (let x = 0; x <= 8; x++) {
-    sudoku[x] = []
-    for (let y = 0; y <= 8; y++) {
-      sudoku[x][y] = Array(9)
+  for (let row = 0; row <= 8; row++) {
+    sudoku[row] = []
+    for (let col = 0; col <= 8; col++) {
+      sudoku[row][col] = Array(9)
         .fill(false)
         .reduce((acc, curr, i) => ({ ...acc, [i + 1]: curr }), {
           locked: false,
           default: false,
+          invalid: false,
         })
     }
   }
@@ -99,11 +101,11 @@ export const sudoku = (() => {
     setBoard(board: Board) {
       update(n => {
         n = createSudoku()
-        board.forEach((rows, x) => {
-          rows.forEach((v, y) => {
+        board.forEach((rows, row) => {
+          rows.forEach((v, col) => {
             if (v) {
-              n[x][y].default = true
-              n[x][y][v] = true
+              n[row][col].default = true
+              n[row][col][v] = true
             }
           })
         })
@@ -114,10 +116,12 @@ export const sudoku = (() => {
     setLock(lock: boolean) {
       const $selected = get(selected)
       update(n => {
-        const curr = n[$selected.x][$selected.y]
+        const curr = n[$selected.row][$selected.col]
         if (
           Object.entries(curr).filter(([k, v]) => k.match(/^[1-9]$/) && v)
-            .length === 1
+            .length === 1 &&
+          !curr.default &&
+          !curr.invalid
         ) {
           curr.locked = lock
         }
@@ -131,7 +135,7 @@ export const sudoku = (() => {
 
         if ($selected)
           update(n => {
-            const curr = n[$selected.x][$selected.y]
+            const curr = n[$selected.row][$selected.col]
             if (!curr.locked && !curr.default) {
               const prev = curr[value]
               if (!$penActive) {
@@ -140,12 +144,18 @@ export const sudoku = (() => {
                   .forEach((_, i) => {
                     curr[i + 1] = false
                   })
+                curr.invalid =
+                  !prev && !isValidCell(sudokuToBoard(n), value, $selected)
               }
               curr[value] = !prev
             }
             return n
           })
       }
+    },
+    async remove() {
+      await storage.delete(key)
+      await storage.save()
     },
     async init() {
       const data = await storage.get<Sudoku>(key)

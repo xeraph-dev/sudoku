@@ -5,12 +5,18 @@
 
   export let posn: Posn
 
-  $: curr = $sudoku[posn.x][posn.y]
+  $: curr = $sudoku[posn.row][posn.col]
   $: isNum = Object.entries(curr).filter(([k, v]) => k.match(/^[1-9]$/) && v).length === 1
   $: num = Object.entries(curr).find(([k, v]) => k.match(/^[1-9]$/) && v)?.[0]
 </script>
 
-<div class="root" class:selected={_.isEqual($selected, posn)} class:locked={curr.locked} class:default={curr.default}>
+<div
+  class="root"
+  class:selected={_.isEqual($selected, posn)}
+  class:locked={curr.locked}
+  class:default={curr.default}
+  class:invalid={curr.invalid}
+>
   <div on:click={() => selected.set(posn)} class:isNum>
     {#if isNum}
       <span>{num}</span>
@@ -30,6 +36,7 @@
       --bg: var(--bg-dark);
       --lock: var(--lock-dark);
       --default: var(--default-dark);
+      --invalid: var(--invalid-dark);
     }
   }
 
@@ -38,6 +45,7 @@
       --bg: var(--bg-light);
       --lock: var(--lock-light);
       --default: var(--default-light);
+      --invalid: var(--invalid-light);
     }
   }
 
@@ -45,12 +53,15 @@
     --bg-dark: var(--indigo-9);
     --lock-dark: var(--gray-8);
     --default-dark: var(--gray-7);
+    --invalid-dark: var(--red-7);
     --bg-light: var(--indigo-1);
     --lock-light: var(--gray-4);
     --default-light: var(--gray-1);
+    --invalid-light: var(--red-1);
     --bg: var(--bg-light);
     --lock: var(--lock-light);
     --default: var(--default-light);
+    --invalid: var(--invalid-light);
     position: relative;
     border: var(--border-size-1) solid var(--bg);
     box-shadow: var(--inner-shadow-2);
@@ -62,6 +73,7 @@
       --bg: var(--bg-dark);
       --lock: var(--lock-dark);
       --default: var(--default-dark);
+      --invalid: var(--invalid-dark);
     }
 
     &.selected {
@@ -84,6 +96,22 @@
       background-color: var(--default);
       border-color: var(--default);
       box-shadow: none;
+
+      &.selected {
+        border-color: var(--bg);
+        box-shadow: var(--shadow-2);
+      }
+    }
+
+    &.invalid {
+      background-color: var(--invalid);
+      border-color: var(--invalid);
+      box-shadow: none;
+
+      &.selected {
+        border-color: var(--bg);
+        box-shadow: var(--shadow-2);
+      }
     }
 
     & > div {
