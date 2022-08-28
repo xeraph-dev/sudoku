@@ -8,6 +8,7 @@
   import HelpIcon from './icons/HelpIcon.svelte'
   import Modal from './Modal.svelte'
   import Timer from './Timer.svelte'
+  import Version from './Version.svelte'
 
   let helpOpen = false
 </script>
@@ -40,6 +41,7 @@
 <footer>
   <Timer />
   <Grow />
+  <Version />
   <button type="button" on:click={() => (helpOpen = true)}><HelpIcon /></button>
 </footer>
 
@@ -49,6 +51,7 @@
     padding: var(--size-2) var(--size-3);
     display: flex;
     align-items: center;
+    gap: var(--size-2);
 
     button {
       font-size: var(--font-size-00);

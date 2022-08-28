@@ -31,7 +31,6 @@ export const theme = (() => {
 
 export const penActive = writable(false)
 export const gamePaused = writable(false)
-export const savedGame = writable(false)
 
 export const selected = (() => {
   const key = 'selected'

@@ -1,9 +1,9 @@
 export enum Page {
-  Menu,
-  Game,
-  Games,
-  Settings,
-  Levels,
+  Game = 'game',
+  Games = 'games',
+  Levels = 'levels',
+  Menu = 'menu',
+  Settings = 'settings',
 }
 
 export enum Theme {

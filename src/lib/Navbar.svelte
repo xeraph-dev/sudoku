@@ -7,6 +7,7 @@
   import DeleteIcon from './icons/DeleteIcon.svelte'
   import _ from 'lodash'
   import { isSolved, sudokuToBoard } from '../generate'
+  import { getName } from '@tauri-apps/api/app'
 
   let timeout
   let invalid = false
@@ -41,14 +42,22 @@
   {#if $page !== Page.Menu}
     <button type="button" on:click={() => page.set(Page.Menu)} title="Go back to menu"><ArrowLeftIcon /></button>
   {/if}
-  {#if $page === Page.Game}
-    <h4 data-tauri-drag-region>{_.capitalize($sudoku.level)}</h4>
-  {/if}
+  {#await getName() then name}
+    <h4 data-tauri-drag-region>
+      {#if $page === Page.Game}
+        {_.capitalize($sudoku.level)}
+      {:else if $page === Page.Menu}
+        {_.capitalize(name)}
+      {:else}
+        {_.capitalize($page)}
+      {/if}
+    </h4>
+  {/await}
   <Grow />
   {#if $page === Page.Game}
-    <button type="button" on:click={checkGame} class:invalid title="Check game and finish if valid"
-      ><CheckmarkCircleIcon /></button
-    >
+    <button type="button" on:click={checkGame} class:invalid title="Check game and finish if valid">
+      <CheckmarkCircleIcon />
+    </button>
     <button type="button" on:click={deleteGame} title="Delete game"><DeleteIcon /></button>
   {/if}
 </header>

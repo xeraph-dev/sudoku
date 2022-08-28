@@ -10,10 +10,14 @@
 
 <div>
   {#each Array(9) as _, i}
-    <button type="button" class="num" data-num={i + 1} on:click={() => sudoku.setValue(i + 1)}>{i + 1}</button>
+    <button type="button" class="num" data-num={i + 1} on:click={() => sudoku.setValue(i + 1)}>
+      <span>{i + 1}</span>
+    </button>
   {/each}
   <button type="button" class="pen" class:active={$penActive} on:click={() => penActive.set(!$penActive)}>
-    <PenIcon />
+    <span>
+      <PenIcon />
+    </span>
   </button>
   <button
     type="button"
@@ -22,11 +26,13 @@
     on:click={() => sudoku.setLock(!curr.locked)}
     disabled={!($selected && isNum) || curr.default || curr.invalid}
   >
-    {#if curr.locked}
-      <LockClose />
-    {:else}
-      <LockOpen />
-    {/if}
+    <span>
+      {#if curr.locked}
+        <LockClose />
+      {:else}
+        <LockOpen />
+      {/if}
+    </span>
   </button>
 </div>
 
@@ -57,16 +63,26 @@
   }
 
   button {
+    position: relative;
     --bg-dark: var(--violet-9);
     --bg-light: var(--violet-1);
     --bg: var(--bg-light);
     aspect-ratio: var(--ratio-square);
-    font-size: var(--font-size-2);
+    font-size: var(--font-size-4);
     padding: var(--size-2);
     transition: box-shadow 145ms var(--ease-4);
     border-width: var(--border-size-1);
     border-style: solid;
     font-family: var(--font-mono);
+
+    & > span {
+      position: absolute;
+      display: grid;
+      place-items: center;
+      padding: var(--size-1);
+      height: 100%;
+      width: 100%;
+    }
 
     @media (--OSdark) {
       --bg: var(--bg-dark);

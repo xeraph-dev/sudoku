@@ -3,21 +3,30 @@
   import _ from 'lodash'
   import { hasGame, page, selected, sudoku } from '../stores'
   import { generateBoard } from '../generate'
+  import CubeLoader from '../lib/loader/CubeLoader.svelte'
+
+  let loading = false
 
   function toLevel(level: Level) {
+    loading = true
     sudoku.setBoard(generateBoard(level), level)
     hasGame.set(true)
     page.set(Page.Game)
     selected.set(undefined)
+    loading = false
   }
 </script>
 
 <section>
-  <ul>
-    {#each Levels as level}
-      <li><button type="button" on:click={() => toLevel(level)}>{_.capitalize(level)}</button></li>
-    {/each}
-  </ul>
+  {#if loading}
+    <CubeLoader />
+  {:else}
+    <ul>
+      {#each Levels as level}
+        <li><button type="button" on:click={() => toLevel(level)}>{_.capitalize(level)}</button></li>
+      {/each}
+    </ul>
+  {/if}
 </section>
 
 <style lang="postcss">

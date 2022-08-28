@@ -1,31 +1,39 @@
 <script lang="ts">
-  import { games, hasGame, page, savedGame, selected, sudoku } from '../stores'
+  import { games, hasGame, page, selected, sudoku } from '../stores'
   import _ from 'lodash'
   import { toHHMMSS } from '../utils'
   import type { Sudoku } from '../types'
   import DeleteIcon from '../lib/icons/DeleteIcon.svelte'
-  import { Page } from '../enums'
   import { DateTime } from 'luxon'
+  import { Page } from '../enums'
 
   function toGame(game: Sudoku) {
     sudoku.set(game)
     hasGame.set(true)
-    savedGame.set(true)
     selected.set(undefined)
     page.set(Page.Game)
+  }
+
+  function deleteGame(game: Sudoku) {
+    games.deleteGame(game)
+    if ($sudoku.uuid === game.uuid) {
+      hasGame.set(false)
+      selected.set(undefined)
+    }
   }
 </script>
 
 <section>
   <ul>
     {#each Object.values($games) as game}
-      <li on:click={() => toGame(game)}>
+      <li>
+        <div on:click={() => toGame(game)} />
         <span class="title">
           <h5>{_.capitalize(game.level)}</h5>
           <time>{DateTime.fromMillis(game.date).toFormat('dd/LL/yy')}</time>
         </span>
         <span class="timer"><strong>time</strong><time>{toHHMMSS(game.timer)}</time></span>
-        <button type="button" on:click={() => games.deleteGame(game)}><DeleteIcon /></button>
+        <button type="button" on:click={() => deleteGame(game)}><DeleteIcon /></button>
       </li>
     {/each}
   </ul>
@@ -42,6 +50,7 @@
 
   li {
     cursor: pointer;
+    position: relative;
     background-color: var(--surface-2);
     padding: var(--size-2);
     border-radius: var(--radius-2);
@@ -49,6 +58,7 @@
     gap: var(--size-2);
     display: grid;
     grid-template-columns: 1fr auto;
+    overflow: hidden;
     align-items: center;
     grid-template-areas:
       'title delete'
@@ -57,6 +67,13 @@
     &:hover {
       box-shadow: var(--shadow-2);
     }
+  }
+
+  div {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    z-index: var(--layer-1);
   }
 
   .title {
@@ -86,6 +103,7 @@
     aspect-ratio: var(--ratio-square);
     box-shadow: var(--inner-shadow-1);
     color: var(--red-6);
+    z-index: var(--layer-2);
 
     &:hover {
       box-shadow: var(--shadow-2);
