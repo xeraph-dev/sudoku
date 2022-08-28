@@ -101,7 +101,7 @@ export const sudoku = (() => {
     await storage.set(key, run)
     await storage.save()
 
-    games.setGame(run)
+    if (get(page) === Page.Game && get(hasGame)) games.setGame(run)
   })
 
   return {
@@ -270,7 +270,11 @@ export const games = (() => {
 export const gamesSize = derived(games, $games => Object.keys($games).length)
 
 export const initStores = async () => {
-  await storage.load()
+  try {
+    await storage.load()
+  } catch (_) {
+    //
+  }
   await theme.init()
   await page.init()
   await sudoku.init()
