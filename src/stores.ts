@@ -84,7 +84,9 @@ const createSudoku = () => {
         .reduce((acc, curr, i) => ({ ...acc, [i + 1]: curr }), {
           locked: false,
           default: false,
-          invalid: false,
+          invalid: Array(9)
+            .fill(false)
+            .reduce((acc, curr, i) => ({ ...acc, [i + 1]: curr }), {}),
         })
     }
   }
@@ -129,12 +131,12 @@ export const sudoku = (() => {
       const $selected = get(selected)
       update(n => {
         const curr = n.data[$selected.row][$selected.col]
-        if (
-          Object.entries(curr).filter(([k, v]) => k.match(/^[1-9]$/) && v)
-            .length === 1 &&
-          !curr.default &&
-          !curr.invalid
-        ) {
+        const nums = Object.entries(curr).filter(
+          ([k, v]) => k.match(/^[1-9]$/) && v,
+        )
+        const invalid = nums.map(([k]) => curr.invalid[k]).some(Boolean)
+
+        if (!curr.default && nums.length === 1 && !invalid) {
           curr.locked = lock
         }
         return n
@@ -148,6 +150,9 @@ export const sudoku = (() => {
         if ($selected)
           update(n => {
             const curr = n.data[$selected.row][$selected.col]
+            const nums = Object.entries(curr).filter(
+              ([k, v]) => k.match(/^[1-9]$/) && v,
+            )
             if (!curr.locked && !curr.default) {
               const prev = curr[value]
               if (!$penActive) {
@@ -156,10 +161,13 @@ export const sudoku = (() => {
                   .forEach((_, i) => {
                     curr[i + 1] = false
                   })
-                curr.invalid =
-                  !prev && !isValidCell(sudokuToBoard(n), value, $selected)
               }
-              curr[value] = !prev
+              curr.invalid[value] = !isValidCell(
+                sudokuToBoard(n),
+                value,
+                $selected,
+              )
+              curr[value] = !$penActive && nums.length > 1 ? value : !prev
             }
             return n
           })

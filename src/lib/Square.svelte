@@ -15,7 +15,7 @@
   class:selected={_.isEqual($selected, posn)}
   class:locked={curr.locked}
   class:default={curr.default}
-  class:invalid={curr.invalid}
+  class:invalid={isNum && curr.invalid[num]}
 >
   <div on:click={() => selected.set(posn)} class:isNum>
     {#if isNum}
@@ -23,7 +23,7 @@
     {:else}
       {#each Object.entries(curr) as [k, v]}
         {#if k.match(/^[1-9]$/) && v}
-          <span data-num={k}>{k}</span>
+          <span data-num={k} class:invalid={!isNum && curr.invalid[k]}>{k}</span>
         {/if}
       {/each}
     {/if}
@@ -141,6 +141,10 @@
 
         & > span {
           font-size: 8px;
+
+          &.invalid {
+            color: var(--invalid-dark);
+          }
 
           &[data-num='1'] {
             grid-area: num1;

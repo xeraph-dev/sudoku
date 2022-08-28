@@ -6,6 +6,7 @@
 
   $: curr = $selected ? $sudoku.data[$selected.row][$selected.col] : { locked: false, default: false, invalid: false }
   $: isNum = Object.entries(curr).filter(([k, v]) => k.match(/^[1-9]$/) && v).length === 1
+  $: num = Object.entries(curr).find(([k, v]) => k.match(/^[1-9]$/) && v)?.[0]
 </script>
 
 <div>
@@ -24,7 +25,7 @@
     class="lock"
     class:active={curr.locked}
     on:click={() => sudoku.setLock(!curr.locked)}
-    disabled={!($selected && isNum) || curr.default || curr.invalid}
+    disabled={!($selected && isNum) || curr.default || (isNum && curr.invalid[num])}
   >
     <span>
       {#if curr.locked}

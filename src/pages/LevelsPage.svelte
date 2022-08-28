@@ -3,7 +3,7 @@
   import _ from 'lodash'
   import { hasGame, page, selected, sudoku } from '../stores'
   import { generateBoard } from '../generate'
-  import CubeLoader from '../lib/loader/CubeLoader.svelte'
+  import CubeLoader from '../lib/loaders/CubeLoader.svelte'
 
   let loading = false
 

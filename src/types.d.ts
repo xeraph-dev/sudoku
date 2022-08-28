@@ -7,22 +7,16 @@ export interface Posn {
 
 export type Move = 'left' | 'right' | 'up' | 'down'
 
-export type SudokuKey =
-  | 1
-  | 2
-  | 3
-  | 4
-  | 5
-  | 6
-  | 7
-  | 8
-  | 9
-  | 'locked'
-  | 'default'
-  | 'invalid'
+export type SudokuNum = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
 
-export type Sudoku = {
-  data: Record<SudokuKey, boolean>[][]
+export interface SudokuCell extends Record<SudokuNum, boolean> {
+  default: boolean
+  invalid: Record<SudokuNum, boolean>
+  locked: boolean
+}
+
+export interface Sudoku {
+  data: SudokuCell[][]
   date: number
   level?: Level
   timer: number
