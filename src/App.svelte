@@ -7,16 +7,16 @@
   import type { Move } from './types'
   import MenuPage from './pages/MenuPage.svelte'
   import GamePage from './pages/GamePage.svelte'
-  import HelpPage from './pages/HelpPage.svelte'
   import SettingsPage from './pages/SettingsPage.svelte'
   import LevelsPage from './pages/LevelsPage.svelte'
+  import GamesPage from './pages/GamesPage.svelte'
 
   onMount(() => {
     document.addEventListener('keydown', event => {
       if (event.key.startsWith('Arrow')) selected.move(event.key.replace('Arrow', '').toLowerCase() as Move)
       else if (event.key.match(/^[1-9]$/)) sudoku.setValue(+event.key)
       else if (event.key === '0') penActive.set(!$penActive)
-      else if (event.key === '.') sudoku.setLock(!$sudoku[$selected.row][$selected.col].locked)
+      else if (event.key === '.') sudoku.setLock(!$sudoku.data[$selected.row][$selected.col].locked)
     })
   })
 
@@ -31,8 +31,8 @@
     <main>
       {#if $page === Page.Menu}
         <MenuPage />
-      {:else if $page === Page.Help}
-        <HelpPage />
+      {:else if $page === Page.Games}
+        <GamesPage />
       {:else if $page === Page.Settings}
         <SettingsPage />
       {:else if $page === Page.Levels}
@@ -63,5 +63,27 @@
   main {
     grid-area: main;
     padding: var(--size-3);
+    overflow: hidden;
+    overflow-y: auto;
+
+    scrollbar-color: var(--surface-2) var(--surface-1);
+    scrollbar-width: var(--border-size-4);
+    scroll-behavior: smooth;
+
+    &::-webkit-scrollbar {
+      width: var(--border-size-4);
+    }
+
+    &::-webkit-scrollbar-track {
+      background-color: var(--surface-1);
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: var(--surface-3);
+    }
+  }
+
+  :global(:where(*)) {
+    user-select: none;
   }
 </style>

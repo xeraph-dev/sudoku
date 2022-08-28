@@ -5,7 +5,7 @@
 
   export let posn: Posn
 
-  $: curr = $sudoku[posn.row][posn.col]
+  $: curr = $sudoku.data[posn.row][posn.col]
   $: isNum = Object.entries(curr).filter(([k, v]) => k.match(/^[1-9]$/) && v).length === 1
   $: num = Object.entries(curr).find(([k, v]) => k.match(/^[1-9]$/) && v)?.[0]
 </script>

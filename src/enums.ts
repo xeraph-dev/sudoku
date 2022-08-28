@@ -1,7 +1,7 @@
 export enum Page {
   Menu,
   Game,
-  Help,
+  Games,
   Settings,
   Levels,
 }

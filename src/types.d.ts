@@ -1,3 +1,5 @@
+import type { Level } from './enums'
+
 export interface Posn {
   col: number
   row: number
@@ -19,6 +21,14 @@ export type SudokuKey =
   | 'default'
   | 'invalid'
 
-export type Sudoku = Record<SudokuKey, boolean>[][]
+export type Sudoku = {
+  data: Record<SudokuKey, boolean>[][]
+  finished: boolean
+  level?: Level
+  timer: number
+  uuid: string
+}
 
 export type Board = number[][]
+
+export type Games = Record<string, Sudoku>

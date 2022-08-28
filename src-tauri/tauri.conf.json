@@ -11,6 +11,10 @@
   },
   "tauri": {
     "allowlist": {
+      "window": {
+        "all": false,
+        "startDragging": true
+      },
       "process": {
         "exit": true
       }

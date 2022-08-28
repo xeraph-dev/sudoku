@@ -15,7 +15,7 @@ export const sudokuToBoard = (sudoku: Sudoku) => {
   const board = newBoard()
   for (const row of range(board.length)) {
     for (const col of range(board[0].length)) {
-      const curr = sudoku[row][col]
+      const curr = sudoku.data[row][col]
       const isNum =
         Object.entries(curr).filter(([k, v]) => k.match(/^[1-9]$/) && v)
           .length === 1
@@ -32,7 +32,6 @@ export const sudokuToBoard = (sudoku: Sudoku) => {
 export const isValidCell = (board: Board, num: number, posn: Posn): boolean => {
   const { col, row } = posn
 
-  console.log(board[row], num)
   if (board[row].includes(num)) return false
 
   const cols = board.map(r => r[col])

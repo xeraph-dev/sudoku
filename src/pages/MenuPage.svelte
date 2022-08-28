@@ -1,7 +1,7 @@
 <script>
   import { exit } from '@tauri-apps/api/process'
   import { Page } from '../enums'
-  import { hasGame, page } from '../stores'
+  import { gamesSize, hasGame, page } from '../stores'
 </script>
 
 <section>
@@ -10,12 +10,15 @@
     {#if $hasGame}
       <li><button type="button" on:click={() => page.set(Page.Game)}>Continue</button></li>
     {/if}
+    {#if $gamesSize}
+      <li><button type="button" on:click={() => page.set(Page.Games)}>Games</button></li>
+    {/if}
     <li><button type="button" on:click={() => page.set(Page.Settings)}>Settings</button></li>
     <li><button type="button" on:click={() => exit(0)}>Exit</button></li>
   </ul>
 </section>
 
-<style>
+<style lang="postcss">
   section {
     display: flex;
     justify-content: center;
@@ -36,10 +39,14 @@
     width: 100%;
     box-shadow: var(--inner-shadow-3);
     background-color: transparent;
-  }
 
-  button:hover {
-    background-color: var(--_border);
-    box-shadow: var(--shadow-2);
+    &:hover {
+      background-color: var(--_border);
+      box-shadow: var(--shadow-2);
+    }
+
+    &:active {
+      box-shadow: var(--inner-shadow-3);
+    }
   }
 </style>

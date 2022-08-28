@@ -1,9 +1,9 @@
-import { get, writable } from 'svelte/store'
+import { derived, get, writable } from 'svelte/store'
 
-import { Page, Theme } from './enums'
+import { Level, Page, Theme } from './enums'
 import { isValidCell, sudokuToBoard } from './generate'
 import { storage } from './storage'
-import type { Board, Move, Posn, Sudoku } from './types'
+import type { Board, Games, Move, Posn, Sudoku } from './types'
 
 export const theme = (() => {
   const key = 'color-scheme'
@@ -30,6 +30,8 @@ export const theme = (() => {
 })()
 
 export const penActive = writable(false)
+export const gamePaused = writable(false)
+export const savedGame = writable(false)
 
 export const selected = (() => {
   const key = 'selected'
@@ -68,12 +70,17 @@ export const selected = (() => {
 })()
 
 const createSudoku = () => {
-  const sudoku: Sudoku = []
+  const sudoku: Sudoku = {
+    uuid: crypto.randomUUID(),
+    timer: 0,
+    finished: false,
+    data: [],
+  }
 
   for (let row = 0; row <= 8; row++) {
-    sudoku[row] = []
+    sudoku.data[row] = []
     for (let col = 0; col <= 8; col++) {
-      sudoku[row][col] = Array(9)
+      sudoku.data[row][col] = Array(9)
         .fill(false)
         .reduce((acc, curr, i) => ({ ...acc, [i + 1]: curr }), {
           locked: false,
@@ -93,19 +100,27 @@ export const sudoku = (() => {
   subscribe(async run => {
     await storage.set(key, run)
     await storage.save()
+
+    if (get(savedGame)) {
+      games.setGame(run)
+    }
   })
 
   return {
     subscribe,
     set,
-    setBoard(board: Board) {
+    setBoard(board: Board, level: Level) {
       update(n => {
         n = createSudoku()
+        n.level = level
+
         board.forEach((rows, row) => {
           rows.forEach((v, col) => {
+            const curr = n.data[row][col]
+
             if (v) {
-              n[row][col].default = true
-              n[row][col][v] = true
+              curr.default = true
+              curr[v] = true
             }
           })
         })
@@ -116,7 +131,7 @@ export const sudoku = (() => {
     setLock(lock: boolean) {
       const $selected = get(selected)
       update(n => {
-        const curr = n[$selected.row][$selected.col]
+        const curr = n.data[$selected.row][$selected.col]
         if (
           Object.entries(curr).filter(([k, v]) => k.match(/^[1-9]$/) && v)
             .length === 1 &&
@@ -135,7 +150,7 @@ export const sudoku = (() => {
 
         if ($selected)
           update(n => {
-            const curr = n[$selected.row][$selected.col]
+            const curr = n.data[$selected.row][$selected.col]
             if (!curr.locked && !curr.default) {
               const prev = curr[value]
               if (!$penActive) {
@@ -153,6 +168,14 @@ export const sudoku = (() => {
           })
       }
     },
+    incrementTimer() {
+      if (!get(gamePaused)) {
+        update(n => {
+          n.timer++
+          return n
+        })
+      }
+    },
     async remove() {
       await storage.delete(key)
       await storage.save()
@@ -168,10 +191,16 @@ export const page = (() => {
   const key = 'page'
   const { set, subscribe, update } = writable<Page>(Page.Menu)
 
+  let interval: NodeJS.Timeout
+
   subscribe(async run => {
+    gamePaused.set(true)
+    clearInterval(interval)
     if (run === Page.Game) {
       await storage.set(key, run)
       await storage.save()
+      gamePaused.set(false)
+      interval = setInterval(sudoku.incrementTimer, 1000)
     } else {
       await storage.delete(key)
       await storage.save()
@@ -209,6 +238,39 @@ export const hasGame = (() => {
   }
 })()
 
+export const games = (() => {
+  const key = 'games'
+  const { set, subscribe, update } = writable<Games>({})
+
+  subscribe(async run => {
+    await storage.set(key, run)
+    await storage.save()
+  })
+
+  return {
+    set,
+    subscribe,
+    setGame(game: Sudoku) {
+      update(n => {
+        n[game.uuid] = game
+        return n
+      })
+    },
+    deleteGame(game: Sudoku) {
+      update(n => {
+        delete n[game.uuid]
+        return n
+      })
+    },
+    async init() {
+      const data = await storage.get<Games>(key)
+      if (data) set(data)
+    },
+  }
+})()
+
+export const gamesSize = derived(games, $games => Object.keys($games).length)
+
 export const initStores = async () => {
   await storage.load()
   await theme.init()
@@ -216,4 +278,5 @@ export const initStores = async () => {
   await sudoku.init()
   await hasGame.init()
   await selected.init()
+  await games.init()
 }

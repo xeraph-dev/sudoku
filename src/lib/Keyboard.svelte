@@ -4,7 +4,7 @@
   import LockOpen from './icons/LockOpen.svelte'
   import LockClose from './icons/LockClose.svelte'
 
-  $: curr = $selected ? $sudoku[$selected.row][$selected.col] : { locked: false, default: false, invalid: false }
+  $: curr = $selected ? $sudoku.data[$selected.row][$selected.col] : { locked: false, default: false, invalid: false }
   $: isNum = Object.entries(curr).filter(([k, v]) => k.match(/^[1-9]$/) && v).length === 1
 </script>
 

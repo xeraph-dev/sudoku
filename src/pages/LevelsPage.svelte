@@ -5,7 +5,7 @@
   import { generateBoard } from '../generate'
 
   function toLevel(level: Level) {
-    sudoku.setBoard(generateBoard(level))
+    sudoku.setBoard(generateBoard(level), level)
     hasGame.set(true)
     page.set(Page.Game)
     selected.set(undefined)

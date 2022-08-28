@@ -1,8 +1,21 @@
 <script>
   import { Page } from '../enums'
-  import { hasGame, page, selected, sudoku } from '../stores'
+  import { games, hasGame, page, selected, sudoku } from '../stores'
+  import Grow from './Grow.svelte'
   import ArrowLeftIcon from './icons/ArrowLeftIcon.svelte'
+  import CheckmarkCircleIcon from './icons/CheckmarkCircleIcon.svelte'
   import DeleteIcon from './icons/DeleteIcon.svelte'
+  import SaveIcon from './icons/SaveIcon.svelte'
+  import _ from 'lodash'
+
+  function checkGame() {
+    //
+  }
+
+  async function saveGame() {
+    games.setGame($sudoku)
+    await deleteGame()
+  }
 
   async function deleteGame() {
     await sudoku.remove()
@@ -12,13 +25,18 @@
   }
 </script>
 
-<header>
+<header data-tauri-drag-region>
   {#if $page !== Page.Menu}
-    <button type="button" on:click={() => page.set(Page.Menu)}><ArrowLeftIcon /></button>
+    <button type="button" on:click={() => page.set(Page.Menu)} title="Go back to menu"><ArrowLeftIcon /></button>
   {/if}
-  <div />
   {#if $page === Page.Game}
-    <button type="button" on:click={deleteGame}><DeleteIcon /></button>
+    <h4 data-tauri-drag-region>{_.capitalize($sudoku.level)}</h4>
+  {/if}
+  <Grow />
+  {#if $page === Page.Game}
+    <button type="button" on:click={checkGame} title="Check game and finish if valid"><CheckmarkCircleIcon /></button>
+    <button type="button" on:click={saveGame} title="Save game to play later"><SaveIcon /></button>
+    <button type="button" on:click={deleteGame} title="Delete game"><DeleteIcon /></button>
   {/if}
 </header>
 
@@ -28,10 +46,12 @@
     padding: var(--size-2) var(--size-3);
     display: flex;
     align-items: center;
+    gap: var(--size-2);
   }
 
-  div {
-    flex-grow: 1;
+  h4 {
+    padding-left: var(--size-2);
+    cursor: default;
   }
 
   button {
