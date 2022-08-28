@@ -73,7 +73,7 @@ const createSudoku = () => {
   const sudoku: Sudoku = {
     uuid: crypto.randomUUID(),
     timer: 0,
-    finished: false,
+    date: new Date().getTime(),
     data: [],
   }
 
@@ -101,9 +101,7 @@ export const sudoku = (() => {
     await storage.set(key, run)
     await storage.save()
 
-    if (get(savedGame)) {
-      games.setGame(run)
-    }
+    games.setGame(run)
   })
 
   return {

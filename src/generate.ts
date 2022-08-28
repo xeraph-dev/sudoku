@@ -83,7 +83,7 @@ const isValidBoard = (board: Board): boolean => {
   return rowsValid && colsValid && boxesValid
 }
 
-const isSolved = (board: Board): boolean =>
+export const isSolved = (board: Board): boolean =>
   !findSpace(board) && isValidBoard(board)
 
 const areRowsValid = (board: Board): boolean =>

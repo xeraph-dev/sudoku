@@ -23,7 +23,7 @@ export type SudokuKey =
 
 export type Sudoku = {
   data: Record<SudokuKey, boolean>[][]
-  finished: boolean
+  date: number
   level?: Level
   timer: number
   uuid: string
