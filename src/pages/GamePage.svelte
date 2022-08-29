@@ -19,6 +19,8 @@
     flex-direction: column;
     gap: var(--size-3);
     position: relative;
+    padding: var(--size-3);
+    max-height: 100%;
   }
 
   div {

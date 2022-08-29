@@ -54,8 +54,8 @@
     place-self: center;
     display: grid;
     gap: var(--size-2);
-    grid-template-columns: repeat(3, var(--size-8));
-    grid-template-rows: repeat(3, var(--size-8));
+    grid-template-columns: repeat(3, 40px);
+    grid-template-rows: repeat(3, 40px);
     grid-template-areas:
       'num7 num8 num9'
       'num4 num5 num6'
@@ -83,6 +83,7 @@
       padding: var(--size-1);
       height: 100%;
       width: 100%;
+      line-height: 0;
     }
 
     @media (--OSdark) {

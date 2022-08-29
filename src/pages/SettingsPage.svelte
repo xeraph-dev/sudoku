@@ -17,7 +17,7 @@
 
 <style lang="postcss">
   section {
-    padding-inline: var(--size-2);
+    padding: var(--size-3);
   }
 
   ul {

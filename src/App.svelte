@@ -48,12 +48,10 @@
 <style lang="postcss">
   div {
     display: grid;
-    max-height: 100vh;
-    min-height: 100vh;
-    overflow: hidden;
-    gap: var(--size-2);
+    height: 100vh;
     grid-template-columns: auto;
-    grid-template-rows: 40px 1fr 30px;
+    grid-template-rows: 40px 570px 30px;
+    overflow: hidden;
     grid-template-areas:
       'navbar'
       'main'
@@ -62,25 +60,6 @@
 
   main {
     grid-area: main;
-    padding: var(--size-3);
-    overflow: hidden;
-    overflow-y: auto;
-
-    scrollbar-color: var(--surface-2) var(--surface-1);
-    scrollbar-width: var(--border-size-4);
-    scroll-behavior: smooth;
-
-    &::-webkit-scrollbar {
-      width: var(--border-size-4);
-    }
-
-    &::-webkit-scrollbar-track {
-      background-color: var(--surface-1);
-    }
-
-    &::-webkit-scrollbar-thumb {
-      background-color: var(--surface-3);
-    }
   }
 
   :global(:where(*)) {

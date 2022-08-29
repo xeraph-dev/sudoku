@@ -40,6 +40,29 @@
 </section>
 
 <style lang="postcss">
+  section {
+    padding: var(--size-3);
+    max-height: 100%;
+
+    overflow: hidden;
+    overflow-y: auto;
+
+    scrollbar-color: var(--surface-2) var(--surface-1);
+    scrollbar-width: var(--border-size-4);
+    scroll-behavior: smooth;
+
+    &::-webkit-scrollbar {
+      width: var(--border-size-4);
+    }
+
+    &::-webkit-scrollbar-track {
+      background-color: var(--surface-1);
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: var(--surface-3);
+    }
+  }
   ul {
     display: flex;
     flex-direction: column;
