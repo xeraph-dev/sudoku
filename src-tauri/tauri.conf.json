@@ -20,7 +20,7 @@
       }
     },
     "bundle": {
-      "active": false,
+      "active": true,
       "category": "Puzzle Game",
       "copyright": "",
       "externalBin": [],
@@ -34,7 +34,7 @@
       "longDescription": "",
       "resources": [],
       "shortDescription": "",
-      "targets": ["deb", "appimage", "app", "msi"],
+      "targets": ["deb", "app", "msi"],
       "appimage": {
         "bundleMediaFramework": false
       },
