@@ -7,7 +7,7 @@
   --text-1: var(--gray-9);
   --text-2: var(--gray-7);
 
-  --surface-1: var(--gray-0);
+  --surface-1: var(--gray-1);
   --surface-2: var(--gray-2);
   --surface-3: var(--gray-3);
   --surface-4: var(--gray-4);
@@ -70,5 +70,9 @@
   :where([type='reset']),
   :where([disabled]) {
     --_bg: var(--surface-1);
+  }
+
+  :where(textarea,select,input:not(button,button[type],input[type='button'],input[type='submit'],input[type='reset'])) {
+    background-color: var(--blue-8);
   }
 }

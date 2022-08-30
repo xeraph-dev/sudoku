@@ -1,5 +1,5 @@
 <script>
-  import { gamePaused } from '../stores'
+  import { gamePaused, message } from '../stores'
   import Keyboard from '../lib/Keyboard.svelte'
   import Sudoku from '../lib/Sudoku.svelte'
 </script>
@@ -7,7 +7,7 @@
 <section>
   {#if $gamePaused}
     <div />
-    <h2>Paused</h2>
+    <h2>{$message.Paused}</h2>
   {/if}
   <Sudoku />
   <Keyboard />

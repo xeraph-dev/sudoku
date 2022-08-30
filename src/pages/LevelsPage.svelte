@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Level, Levels, Page } from '../enums'
   import _ from 'lodash'
-  import { hasGame, page, selected, sudoku } from '../stores'
+  import { hasGame, message, page, selected, sudoku } from '../stores'
   import { generateBoard } from '../generate'
   import CubeLoader from '../lib/loaders/CubeLoader.svelte'
 
@@ -23,7 +23,7 @@
   {:else}
     <ul>
       {#each Levels as level}
-        <li><button type="button" on:click={() => toLevel(level)}>{_.capitalize(level)}</button></li>
+        <li><button type="button" on:click={() => toLevel(level)}>{$message[_.capitalize(level)]}</button></li>
       {/each}
     </ul>
   {/if}

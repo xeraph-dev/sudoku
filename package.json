@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@tauri-apps/api": "^1.0.2",
+    "js-yaml": "^4.1.0",
     "lodash": "^4.17.21",
     "luxon": "^3.0.1",
     "tauri-plugin-store-api": "github:tauri-apps/tauri-plugin-store#dev"
@@ -20,6 +21,7 @@
     "@sveltejs/vite-plugin-svelte": "^1.0.1",
     "@tauri-apps/cli": "^1.0.5",
     "@tsconfig/svelte": "^3.0.0",
+    "@types/js-yaml": "^4.0.5",
     "@types/lodash": "^4.14.184",
     "@types/luxon": "^3.0.0",
     "@types/node": "^18.7.10",

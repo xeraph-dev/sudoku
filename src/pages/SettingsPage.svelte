@@ -1,15 +1,22 @@
 <script>
-  import { theme } from '../stores'
+  import { lang, message, theme } from '../stores'
 </script>
 
 <section>
   <ul>
     <li>
-      <span>Theme</span>
+      <span>{$message.Theme}</span>
       <select bind:value={$theme}>
-        <option selected value="system">System</option>
-        <option value="dark">Dark</option>
-        <option value="light">Light</option>
+        <option selected value="system">{$message.System}</option>
+        <option value="dark">{$message.Dark}</option>
+        <option value="light">{$message.Light}</option>
+      </select>
+    </li>
+    <li>
+      <span>{$message.Language}</span>
+      <select bind:value={$lang}>
+        <option selected value="en">English</option>
+        <option value="es">Español</option>
       </select>
     </li>
   </ul>

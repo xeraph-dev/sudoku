@@ -65,7 +65,7 @@
         "fullscreen": false,
         "resizable": false,
         "title": "Sudoku",
-        "decorations": false,
+        "decorations": true,
         "fileDropEnabled": false,
         "center": false,
         "focus": true,

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { games, hasGame, page, selected, sudoku } from '../stores'
+  import { games, hasGame, message, page, selected, sudoku } from '../stores'
   import _ from 'lodash'
   import { toHHMMSS } from '../utils'
   import type { Sudoku } from '../types'
@@ -29,10 +29,10 @@
       <li>
         <div on:click={() => toGame(game)} />
         <span class="title">
-          <h5>{_.capitalize(game.level)}</h5>
+          <h5>{$message[_.capitalize(game.level)]}</h5>
           <time>{DateTime.fromMillis(game.date).toFormat('dd/LL/yy')}</time>
         </span>
-        <span class="timer"><strong>time</strong><time>{toHHMMSS(game.timer)}</time></span>
+        <span class="timer"><strong>{$message.time}</strong><time>{toHHMMSS(game.timer)}</time></span>
         <button type="button" on:click={() => deleteGame(game)}><DeleteIcon /></button>
       </li>
     {/each}

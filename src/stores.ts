@@ -1,3 +1,4 @@
+import yaml from 'js-yaml'
 import { derived, get, writable } from 'svelte/store'
 
 import { Level, Page, Theme } from './enums'
@@ -276,12 +277,72 @@ export const games = (() => {
 
 export const gamesSize = derived(games, $games => Object.keys($games).length)
 
+export const lang = (() => {
+  const key = 'language'
+  const { set, subscribe } = writable(navigator.language.split('-')[0])
+
+  subscribe(async run => {
+    await storage.set(key, run)
+    await storage.save()
+  })
+
+  return {
+    subscribe,
+    set,
+    async init() {
+      const data = await storage.get<string>(key)
+      if (data) set(data)
+    },
+  }
+})()
+
+export const messages = (() => {
+  const { subscribe, update } = writable<
+    Record<string, Record<string, string>>
+  >({})
+
+  return {
+    subscribe,
+    async init() {
+      const es = await fetch('/locales/es.yaml')
+        .then(res => res.text())
+        .then(res => yaml.load(res))
+      const en = Object.fromEntries(Object.entries(es).map(([k]) => [k, k]))
+
+      update(n => {
+        n.es = es as Record<string, string>
+        n.en = en as Record<string, string>
+        return n
+      })
+    },
+  }
+})()
+
+export const message = (() => {
+  const { set, subscribe } = writable<Record<string, string>>({})
+
+  lang.subscribe(run => {
+    const $ = get(messages)[run]
+    if ($) set($)
+  })
+
+  return {
+    subscribe,
+    async init() {
+      set(get(messages)[get(lang)])
+    },
+  }
+})()
+
 export const initStores = async () => {
   try {
     await storage.load()
   } catch (_) {
     //
   }
+  await messages.init()
+  await lang.init()
+  await message.init()
   await theme.init()
   await page.init()
   await sudoku.init()

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Page } from '../enums'
-  import { games, hasGame, page, selected, sudoku } from '../stores'
+  import { games, hasGame, message, page, selected, sudoku } from '../stores'
   import Grow from './Grow.svelte'
   import ArrowLeftIcon from './icons/ArrowLeftIcon.svelte'
   import CheckmarkCircleIcon from './icons/CheckmarkCircleIcon.svelte'
@@ -40,25 +40,27 @@
 
 <header data-tauri-drag-region>
   {#if $page !== Page.Menu}
-    <button type="button" on:click={() => page.set(Page.Menu)} title="Go back to menu"><ArrowLeftIcon /></button>
+    <button type="button" on:click={() => page.set(Page.Menu)} title={$message['Go back to menu']}>
+      <ArrowLeftIcon />
+    </button>
   {/if}
   {#await getName() then name}
     <h4 data-tauri-drag-region>
       {#if $page === Page.Game}
-        {_.capitalize($sudoku.level)}
+        {$message[_.capitalize($sudoku.level)]}
       {:else if $page === Page.Menu}
-        {_.capitalize(name)}
+        {$message[_.capitalize(name)]}
       {:else}
-        {_.capitalize($page)}
+        {$message[_.capitalize($page)]}
       {/if}
     </h4>
   {/await}
   <Grow />
   {#if $page === Page.Game}
-    <button type="button" on:click={checkGame} class:invalid title="Check game and finish if valid">
+    <button type="button" on:click={checkGame} class:invalid title={$message['Check game and finish if valid']}>
       <CheckmarkCircleIcon />
     </button>
-    <button type="button" on:click={deleteGame} title="Delete game"><DeleteIcon /></button>
+    <button type="button" on:click={deleteGame} title={$message['Delete game']}><DeleteIcon /></button>
   {/if}
 </header>
 

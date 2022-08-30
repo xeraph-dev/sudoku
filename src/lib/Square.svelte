@@ -55,8 +55,8 @@
     --default-dark: var(--gray-7);
     --invalid-dark: var(--red-7);
     --bg-light: var(--indigo-1);
-    --lock-light: var(--gray-4);
-    --default-light: var(--gray-1);
+    --lock-light: var(--gray-5);
+    --default-light: var(--gray-3);
     --invalid-light: var(--red-1);
     --bg: var(--bg-light);
     --lock: var(--lock-light);
@@ -84,7 +84,6 @@
     &.locked {
       background-color: var(--lock);
       border-color: var(--lock);
-      box-shadow: none;
 
       &.selected {
         border-color: var(--bg);
