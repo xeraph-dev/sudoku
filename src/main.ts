@@ -1,3 +1,5 @@
+import './assets/theme.pcss'
+
 import App from './App.svelte'
 
 if (import.meta.env.MODE === 'production') {

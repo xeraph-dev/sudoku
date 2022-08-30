@@ -6,8 +6,10 @@
   export let posn: Posn
 
   $: curr = $sudoku.data[posn.row][posn.col]
+  $: sel = $sudoku.data[$selected?.row]?.[$selected?.col] ?? {}
   $: isNum = Object.entries(curr).filter(([k, v]) => k.match(/^[1-9]$/) && v).length === 1
   $: num = Object.entries(curr).find(([k, v]) => k.match(/^[1-9]$/) && v)?.[0]
+  $: selNum = Object.entries(sel).find(([k, v]) => k.match(/^[1-9]$/) && v)?.[0]
 </script>
 
 <div
@@ -16,6 +18,7 @@
   class:locked={curr.locked}
   class:default={curr.default}
   class:invalid={isNum && curr.invalid[num]}
+  class:eq-selected={isNum && num === selNum}
 >
   <div on:click={() => selected.set(posn)} class:isNum>
     {#if isNum}
@@ -23,7 +26,9 @@
     {:else}
       {#each Object.entries(curr) as [k, v]}
         {#if k.match(/^[1-9]$/) && v}
-          <span data-num={k} class:invalid={!isNum && curr.invalid[k]}>{k}</span>
+          <span data-num={k} class:invalid={!isNum && curr.invalid[k]} class:eq-selected={!isNum && k === selNum}
+            >{k}</span
+          >
         {/if}
       {/each}
     {/if}
@@ -74,6 +79,10 @@
       --lock: var(--lock-dark);
       --default: var(--default-dark);
       --invalid: var(--invalid-dark);
+    }
+
+    &.eq-selected {
+      color: var(--green-9);
     }
 
     &.selected {
@@ -143,6 +152,10 @@
 
           &.invalid {
             color: var(--invalid-dark);
+          }
+
+          &.eq-selected {
+            color: var(--green-9);
           }
 
           &[data-num='1'] {

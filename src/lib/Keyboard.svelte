@@ -1,17 +1,26 @@
-<script>
+<script lang="ts">
   import PenIcon from './icons/PenIcon.svelte'
   import { penActive, sudoku, selected } from '../stores'
   import LockOpen from './icons/LockOpen.svelte'
   import LockClose from './icons/LockClose.svelte'
+  import type { SudokuCell } from 'src/types'
 
   $: curr = $selected ? $sudoku.data[$selected.row][$selected.col] : { locked: false, default: false, invalid: false }
   $: isNum = Object.entries(curr).filter(([k, v]) => k.match(/^[1-9]$/) && v).length === 1
   $: num = Object.entries(curr).find(([k, v]) => k.match(/^[1-9]$/) && v)?.[0]
+  $: count = $sudoku.data.flat(Infinity).reduce((acc, curr: SudokuCell) => {
+    const entries = Object.entries(curr)
+    return Object.entries(curr.invalid).every(([_, v]) => !v) &&
+      entries.filter(([k, v]) => k.match(/^[1-9]$/) && v).length === 1
+      ? Object.fromEntries(entries.map(([k, v]) => [k, (acc?.[k] ?? 0) + v]))
+      : acc
+  }, {})
 </script>
 
 <div>
   {#each Array(9) as _, i}
     <button type="button" class="num" data-num={i + 1} on:click={() => sudoku.setValue(i + 1)}>
+      <small>{9 - count[i + 1]}</small>
       <span>{i + 1}</span>
     </button>
   {/each}
@@ -115,6 +124,16 @@
 
     &.num {
       grid-area: num;
+      position: relative;
+    }
+
+    small {
+      position: absolute;
+      font-family: var(--font-mono);
+      font-size: var(--font-size-00);
+      top: 0;
+      right: 4px;
+      color: var(--green-9);
     }
 
     &:is(.pen, .lock).active {
